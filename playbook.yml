@@ -1,0 +1,46 @@
+- name: my-playbook
+  hosts: server
+  become: yes
+  become_user: root
+  become_method: sudo
+  tasks:
+    - name: update
+      apt:
+          upgrade: yes
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_src: .
+        files:
+          - docker-compose.yml
+        state: present
+    - name: Prune everything
+      community.docker.docker_prune:
+        containers: true
+        images: true

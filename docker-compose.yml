@@ -1,0 +1,21 @@
+version: '3.9'
+
+networks:
+  new-work:
+    driver: bridge
+
+services:
+  springapp:
+    image: "phatnguyen1812/my-first-repo"
+    ports:
+      - 8080:8080
+    restart: always
+    networks:
+      - "new-work"
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6378:6378"
+    restart: always
+    networks:
+      - "new-work"
