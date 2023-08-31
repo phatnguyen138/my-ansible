@@ -15,14 +15,14 @@ pipeline {
         stage('Deploy Mysql container') {
            
             steps {
-                withCredentials([file(credentialsId: 'ansible-key', variable: 'ansible-key')]) {
+                withCredentials([file(credentialsId: 'ansible-key', variable: 'ansibleKey')]) {
                     sh 'ls -la'
-                    sh "cp /$ansible-key ansible-key"
-                    sh 'cat ansible-key'
+                    sh "cp /$ansibleKey ansibleKey"
+                    sh 'cat ansibleKey'
                     sh 'ansible --version'
                     sh 'ls -la'
-                    sh 'chmod 400 ansible-key '
-                    sh 'ansible-playbook -i hosts --private-key ansible-key playbook.yml'
+                    sh 'chmod 400 ansibleKey '
+                    sh 'ansible-playbook -i hosts --private-key ansibleKey playbook.yml'
             }
             }
         }
