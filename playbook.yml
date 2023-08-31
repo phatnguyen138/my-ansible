@@ -7,6 +7,7 @@
     - name: update
       apt:
           upgrade: yes
+
     - name: Install required system packages
       apt:
         pkg:
@@ -19,6 +20,7 @@
           - python3-setuptools
         state: latest
         update_cache: true
+
     - name: Add Docker GPG apt Key
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
@@ -34,12 +36,34 @@
         name: docker-ce
         state: latest
         update_cache: true
+
+    - name: Install Docker Module for Python
+      pip:
+        name:
+            - docker
+            - docker-compose
+    - name: Change permissions of /var/run/docker.sock
+      file:
+        path: /var/run/docker.sock
+        mode: '0666'
+
+    - name: Create /etc/phat directory
+      file:
+        path: /home/ubuntu/ansible
+        state: directory
+
+    - name: Copy docker-compose.yml file to remote machine
+      copy:
+        src: docker-compose.yml
+        dest: /home/ubuntu/ansible/docker-compose.yml
+
     - name: Deploy Docker Compose stack
       community.docker.docker_compose:
-        project_src: .
+        project_src: /home/ubuntu/ansible
         files:
           - docker-compose.yml
         state: present
+
     - name: Prune everything
       community.docker.docker_prune:
         containers: true
