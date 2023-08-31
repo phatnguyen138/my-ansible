@@ -19,7 +19,7 @@
           - virtualenv
           - python3-setuptools
         state: latest
-        update_cache: true
+        update_cache: no
 
     - name: Add Docker GPG apt Key
       apt_key:
